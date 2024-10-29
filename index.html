@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User 7534868</title>
-  <style>
-    body {
+    <style>
+      body {
         height: 100vh;
-        font-family: "Times New Roman", sans-serif;
-        background-image: url(windows.png);
+        font-family: "Courier New", monospace;
+        background-image: url(terminal.png);
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -18,60 +18,38 @@
       .h1 {
         font-size: 7vw;
         text-align: center;
-        color: white;
-        padding: 5px;
-        margin: 5%;
+        color: rgb(0, 208, 0);
         font-variant: small-caps;
-        background-color: gray;
+        text-decoration: underline;
       }
-    
+
       .h2 {
-        font-size: 4vw;
-        color: white;
-        padding: 5px;
-        background-color: gray;
+        font-size: 3vw;
+        color: rgb(0, 208, 0);
         text-align: center;
-        display: none;
       }
-  </style>
-</head>
-<body>
+    </style>
+  </head>
+  <body>
     <h1 class="h1">
       User 7534868
     </h1>
     <h2 class="h2">
-      Female, 18 years. New York. High school student, applying for colleges. Emotional traits: cautious, anxious, spiritual, creative. Physical traits: medium hair length, underweight. Interests: origami, arts and crafts, astrology, fortune telling.
+      ASSUMPTIONS<br>Female, 18 years. Location: New York. High school student, applying for colleges. Emotional traits: cautious, anxious, spiritual, creative. Physical traits: medium hair length, underweight. Interests: origami, arts and crafts, astrology, fortune telling.
     </h2>
     <audio id="dingSound" src="ding.mp3" preload="auto"></audio>
     <script>
       let currentIndex = 0;
 
       function speakText(text) {
-          if ('speechSynthesis' in window) {
-              const utterance = new SpeechSynthesisUtterance(text);
-              utterance.pitch = 1.0;
-              utterance.rate = 0.7;
-              window.speechSynthesis.speak(utterance);
-          }
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.pitch = 1.0;
+          utterance.rate = 0.7;
+          window.speechSynthesis.speak(utterance);
+        }
       }
 
-
-      function displayLoop() {
-          const h2Elements = document.querySelectorAll('.h2');
-
-          h2Elements.forEach(el => el.style.display = 'none');
-
-          h2Elements[currentIndex].style.display = 'block';
-          speakText(h2Elements[currentIndex].innerText);
-
-          currentIndex = (currentIndex + 1) % h2Elements.length;
-      }
-
-      window.onload = function() {
-          displayLoop();
-          setInterval(displayLoop, 2000);
-      };
-      
       function parseCSV(csv) {
         const lines = csv.split("\n");
         const result = [];
@@ -79,49 +57,56 @@
         for (let i = 1; i < lines.length; i++) {
           const line = lines[i];
           if (line) {
-            const [time, query, url] = line.split(",");
+            const [time, query, url] = line.split(";");
             result.push({
-              time, query, url
+              time,
+              query,
+              url
             });
           }
         }
         return result;
       }
-      
+
       async function fetchCSV() {
         const response = await fetch('structured_aol_search_data.csv');
         const csv = await response.text();
         return csv;
       }
-      
+
       async function main() {
         let index = 0;
         const csv = await fetchCSV();
         const data = parseCSV(csv);
         const dingSound = document.getElementById("dingSound");
-        
+        const h2Element = document.querySelector("h2");
+
         function updateDisplay() {
-            if (data.length > 0) {
-              dingSound.currentTime = 0;
-                    dingSound.play();
-                const { time } = data[index];
-              
-              const p = document.createElement("p");
-              p.textContent = `${time}`;
-              p.style.fontSize = "20px";
-              p.style.fontWeight = "bold";
-              p.style.backgroundColor = "#ffffff";
-              p.style.border = "5px solid white";
-              document.body.prepend(p);
-              index++;
-            }
+          if (data.length > 0) {
+            dingSound.currentTime = 0;
+            dingSound.play();
+            const {
+              time: time, url: url, query: query
+            } = data[index];
+
+            const p = document.createElement("p");
+            p.textContent = `${time} ${query}`;
+            p.style.fontSize = "20px";
+            p.style.fontWeight = "bold";
+            p.style.color = "black";
+            p.style.boxShadow = "green 5px 5px 5px";
+            p.style.backgroundColor = "rgb(0, 200, 0)";
+            p.style.border = "1px solid gray";
+            h2Element.insertAdjacentElement("afterend", p);
+            index++;
+          }
         }
 
         updateDisplay();
-        setInterval(updateDisplay, 1000);
+        setInterval(updateDisplay, 500);
       }
 
-    main();
+      main();
     </script>
-</body>
+  </body>
 </html>
